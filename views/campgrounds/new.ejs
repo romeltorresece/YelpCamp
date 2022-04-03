@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Campground</title>
+</head>
+<body>
+    <h1>Add Campground</h1>
+    <form action="/campgrounds" method="POST">
+        <div>
+            <label for="title">Title</label>
+            <!-- name attribute value will be an object campground with property title -->
+            <!-- this is from the qs library of body parser used by express -->
+            <input id="title" type="text" name="campground[title]">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input id="location" type="text" name="campground[location]">
+        </div>
+        <button>Add</button>
+    </form>
+    
+    <footer>
+        <a href="/campgrounds">All Campgrounds</a>
+    </footer>
+    
+</body>
+</html>

@@ -20,9 +20,9 @@ const CampgroundSchema = new Schema({
 CampgroundSchema.post('findOneAndDelete', async function(doc) {
     // console.log(campground.reviews.length);
     // will check if the reviews array is empty
-    if (doc) {
-        const res = await Review.deleteMany({ _id: { $in: campground.reviews } });
-        console.log(res);
+    if (doc && doc.reviews.length) {
+        const res = await Review.deleteMany({ _id: { $in: doc.reviews } });
+        // console.log(res);
     }
 });
 

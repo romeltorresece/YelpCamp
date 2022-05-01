@@ -54,22 +54,14 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    if (!['/login', '/register', '/'].includes(req.originalUrl)) {
+    if (!['/login', '/register', '/'].includes(req.originalUrl) && !req.originalUrl.includes('reviews')) {
         req.session.returnTo = req.originalUrl;
     }
-    // console.log(req.session.returnTo);
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.currentUser = req.user;
     next();
 });
-
-// passport test route for user registration
-// app.get('/fakeUser', async (req, res) => {
-//     const user = new User({ email: 'romelt@user.com', username: 'romelt' });
-//     const newUser = await User.register(user, 'monkey');
-//     res.send(newUser);
-// });
 
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
@@ -86,7 +78,6 @@ app.all('*', (req, res, next) => {
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
     if (!err.message) err.message = 'Oh No! Something Went Wrong!';
-    // console.log(err.statusCode);
     res.status(statusCode).render('error', { err });
 });
 

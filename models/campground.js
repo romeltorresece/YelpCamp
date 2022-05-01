@@ -9,6 +9,10 @@ const CampgroundSchema = new Schema({
     price: Number,
     description: String,
     location: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     reviews: [
         {
             type: Schema.Types.ObjectId,
@@ -18,11 +22,8 @@ const CampgroundSchema = new Schema({
 });
 
 CampgroundSchema.post('findOneAndDelete', async function(doc) {
-    // console.log(campground.reviews.length);
-    // will check if the reviews array is empty
     if (doc && doc.reviews.length) {
         const res = await Review.deleteMany({ _id: { $in: doc.reviews } });
-        // console.log(res);
     }
 });
 

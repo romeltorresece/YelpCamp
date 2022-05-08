@@ -2,7 +2,7 @@
 <div class="row">
     <h1 class="text-center">Edit Campground</h1>
     <div class="col-6 offset-3">
-        <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+        <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <input class="form-control" id="title" type="text" name="campground[title]" value="<%= campground.title %>" required>
@@ -13,13 +13,6 @@
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
                 <input class="form-control" id="location" type="text" name="campground[location]" value="<%= campground.location %>" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="image">Image URL</label>
-                <input class="form-control" id="image" type="text" name="campground[image]" value="<%= campground.image %>" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -41,6 +34,24 @@
                 <div class="valid-feedback">
                     Looks good!
                 </div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Add Image(s) - <em>Max of 2 files and size of 1Mb each</em></label>
+                <input class="form-control" type="file" id="image" name="image" multiple>
+            </div>
+            <div class="row">
+                <p>Delete Image(s):</p>
+                <% campground.images.forEach(function(img, i) { %>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <img src="<%= img.thumbnail %>" class="card-img" alt="">
+                            <div class="card-img-overlay text-end pt-1 pe-1">
+                                <input class="form-check-input" type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>">
+                                <label for="image-<%= i %>" class="form-check-label visually-hidden">Delete</label>
+                            </div>   
+                        </div>
+                    </div>
+                <% }) %>
             </div>
             <div class="mb-3">
                 <button class="btn btn-info">Update Campground</button>

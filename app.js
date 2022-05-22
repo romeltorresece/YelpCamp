@@ -16,7 +16,7 @@ const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const MongoStore = require('connect-mongo');
-
+ 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 mongoose.connect(dbUrl)
     .then(() => {
@@ -32,6 +32,9 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 
 app.engine('ejs', ejsMate);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -39,9 +42,6 @@ app.use(methodOverride('_method'));
 app.use(mongoSanitize({
     replaceWith: '_'
 }));
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
 const store = MongoStore.create({
@@ -64,7 +64,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        // secure: true,
+        secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -120,6 +120,8 @@ app.use(
         },
     })
 );
+
+app.locals.moment = require('moment');
 
 app.use(passport.initialize());
 app.use(passport.session());

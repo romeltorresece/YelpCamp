@@ -34,7 +34,7 @@ const reviewRoutes = require('./routes/reviews');
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -64,7 +64,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -131,7 +131,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    if (!['/login', '/register', '/'].includes(req.originalUrl) && !req.originalUrl.includes('reviews')) {
+    if (!['/login', '/register', '/'].includes(req.originalUrl) 
+        && !req.originalUrl.includes('reviews')
+        && !(/page=\d+/.test(req.originalUrl))) {
         req.session.returnTo = req.originalUrl;
     }
     res.locals.success = req.flash('success');
@@ -142,7 +144,7 @@ app.use((req, res, next) => {
 
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
-app.use('/campgrounds/:id/reviews', reviewRoutes);
+app.use('/campgrounds/:slug/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');

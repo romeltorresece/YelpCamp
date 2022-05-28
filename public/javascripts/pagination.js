@@ -1,19 +1,19 @@
 const paginate = document.getElementById('paginate');
-const campgroundsContainer = $('#campgrounds-container');
+const $campgroundsContainer = $('#campgrounds-container');
+const statusContent = document.getElementById('status');
 paginate.addEventListener('click', function(e) {
     e.preventDefault();
-    fetch(this.href)
+    fetch(this.href,  { headers: { 'Accept': 'application/json' } })
         .then(response => response.json())
         .then(data => {
-            for (let campground of data.docs) {
-                let template = generateCampground(campground);
-                campgroundsContainer.append(template);
-            }
+            let template = data.docs.map(generateCampground).join('');
+            $campgroundsContainer.append(template);
             let { nextPage, hasNextPage } = data;
             if (hasNextPage) {
                 this.href = this.href.replace(/page=\d+/, `page=${nextPage}`);
             } else {
-                this.hidden = true;
+                this.parentElement.remove();
+                statusContent.classList.remove('d-none');
             }
             campgrounds.features.push(...data.docs);
             map.getSource('campgrounds').setData(campgrounds);
@@ -22,7 +22,7 @@ paginate.addEventListener('click', function(e) {
 });
 
 function generateCampground(campground) {
-    let template = `
+    return `
     <div class="card mb-3">
         <div class="row">
             <div class="col-md-4">
@@ -35,11 +35,9 @@ function generateCampground(campground) {
                     <p class="card-text">
                         <small class="text-muted">${ campground.location }</small>
                     </p>
-                    <a class="btn btn-outline-dark" href="/campgrounds/${ campground._id }">View ${ campground.title }</a>
+                    <a class="btn btn-outline-dark" href="/campgrounds/${ campground.slug }">View ${ campground.title }</a>
                 </div>
             </div>
         </div>
     </div>`;
-
-    return template;
 }
